@@ -27,8 +27,8 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:padding="10dip"
-            android:textColor="@android:color/black"
             android:text="天气"
+            android:textColor="@android:color/black"
             android:textSize="18sp" />
     </RelativeLayout>
 
@@ -50,6 +50,24 @@
                 android:padding="10dip"
                 android:textColor="@android:color/black"
                 android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/text_label_recentlydays"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dip"
+                android:gravity="center_horizontal"
+                android:text="最近5天 天气预报"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/layout_weather_show_moredays"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

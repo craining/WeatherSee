@@ -57,6 +57,7 @@ public class CustomProgressDialog {
 		mTextView = (TextView) mMainView.findViewById(R.id.text_progressdlg_msg);
 		progressDialog.getWindow().setGravity(Gravity.CENTER);
 		// }
+		progressDialog.setCanceledOnTouchOutside(false);
 		progressDialog.setCancelable(cancelable);
 		if (keyListener != null) {
 			progressDialog.setOnKeyListener(keyListener);

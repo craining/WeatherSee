@@ -6,8 +6,8 @@ private String name;
 public String getName() {
 	return name;
 }
-public void setName(String city) {
-	this.name = city;
+public void setName(String name) {
+	this.name = name;
 }
 //public String getCode() {
 //	return code;

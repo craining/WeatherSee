@@ -1,16 +1,14 @@
 package com.zgy.weathersee.controller;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
-import org.ksoap2.SoapEnvelope;
-import org.ksoap2.serialization.SoapObject;
-import org.ksoap2.serialization.SoapSerializationEnvelope;
-import org.ksoap2.transport.HttpTransportSE;
-import org.xmlpull.v1.XmlPullParserException;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 
 import com.zgy.weathersee.bean.Result;
 import com.zgy.weathersee.observer.MainObserver;
+import com.zgy.weathersee.util.HttpUtil;
 import com.zgy.weathersee.util.PraseUtil;
 
 public class MainController {
@@ -36,34 +34,19 @@ public class MainController {
 			public void run() {
 
 				try {
-					final String namespace = "http://WebXml.com.cn/";
-					final String url = "http://webservice.webxml.com.cn/WebServices/WeatherWS.asmx";
-					final String methodName = "getRegionProvince";
-					HttpTransportSE transport = new HttpTransportSE(url);
-					transport.debug = true;
-					SoapObject soapObject = new SoapObject(namespace, methodName);
-					SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
-					envelope.bodyOut = soapObject;
-					envelope.dotNet = true;
-					envelope.setOutputSoapObject(soapObject);
-					try {
-						transport.call(namespace + methodName, envelope);
-					} catch (IOException e) {
-						e.printStackTrace();
-					} catch (XmlPullParserException e) {
-						e.printStackTrace();
+					List<NameValuePair> params = new ArrayList<NameValuePair>();
+					String str = HttpUtil.request("getRegionProvince", params);
+					if (str != null && str.length() > 0) {
+						ArrayList<Result> prov = PraseUtil.Parse(str);
+						if (prov != null && prov.size() > 0) {
+							observer.getProvienceFinished(true, prov);
+							return;
+						}
 					}
-					SoapObject result = null;
-					result = (SoapObject) envelope.bodyIn;
-					int i = result.getPropertyCount();
-					String str = result.getProperty(i - 1).toString();
-					ArrayList<Result> prov = PraseUtil.Parse(str);
-					observer.getProvienceFinished(true, prov);
 				} catch (Exception e) {
 					e.printStackTrace();
-					observer.getProvienceFinished(false, null);
 				}
-
+				observer.getProvienceFinished(false, null);
 			}
 		}).start();
 	}
@@ -75,34 +58,21 @@ public class MainController {
 			public void run() {
 
 				try {
-					final String namespace = "http://WebXml.com.cn/";
-					final String url = "http://webservice.webxml.com.cn/WebServices/WeatherWS.asmx";
-					final String methodName = "getSupportCityString";
-					HttpTransportSE transport = new HttpTransportSE(url);
-					transport.debug = true;
-					SoapObject soapObject = new SoapObject(namespace, methodName);
-					soapObject.addProperty("theRegionCode", provName);
-					SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
-					envelope.bodyOut = soapObject;
-					envelope.dotNet = true;
-					envelope.setOutputSoapObject(soapObject);
-					try {
-						transport.call(namespace + methodName, envelope);
-					} catch (IOException e) {
-						e.printStackTrace();
-					} catch (XmlPullParserException e) {
-						e.printStackTrace();
+					List<NameValuePair> params = new ArrayList<NameValuePair>();
+					params.add(new BasicNameValuePair("theRegionCode", provName));
+					String str = HttpUtil.request("getSupportCityString", params);
+
+					if (str != null && str.length() > 0) {
+						ArrayList<Result> prov = PraseUtil.Parse(str);
+						if (prov != null && prov.size() > 0) {
+							observer.getCityFinished(true, prov);
+							return;
+						}
 					}
-					SoapObject result = null;
-					result = (SoapObject) envelope.bodyIn;
-					int i = result.getPropertyCount();
-					String str = result.getProperty(i - 1).toString();
-					ArrayList<Result> prov = PraseUtil.Parse(str);
-					observer.getCityFinished(true, prov);
 				} catch (Exception e) {
 					e.printStackTrace();
-					observer.getCityFinished(false, null);
 				}
+				observer.getCityFinished(false, null);
 			}
 		}).start();
 	}
@@ -113,34 +83,22 @@ public class MainController {
 			@Override
 			public void run() {
 				try {
-					final String namespace = "http://WebXml.com.cn/";
-					final String url = "http://webservice.webxml.com.cn/WebServices/WeatherWS.asmx";
-					final String methodName = "getWeather";
-					HttpTransportSE transport = new HttpTransportSE(url);
-					transport.debug = true;
-					SoapObject soapObject = new SoapObject(namespace, methodName);
-					soapObject.addProperty("theCityCode", cityName);
-					SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
-					envelope.bodyOut = soapObject;
-					envelope.dotNet = true;
-					envelope.setOutputSoapObject(soapObject);
-					try {
-						transport.call(namespace + methodName, envelope);
-					} catch (IOException e) {
-						e.printStackTrace();
-					} catch (XmlPullParserException e) {
-						e.printStackTrace();
+					List<NameValuePair> params = new ArrayList<NameValuePair>();
+					params.add(new BasicNameValuePair("theCityCode", cityName));
+					String str = HttpUtil.request("getWeather", params);
+
+					if (str != null && str.length() > 0) {
+						ArrayList<Result> prov = PraseUtil.Parse(str);
+						if (prov != null && prov.size() > 0) {
+							observer.getWeatherFinished(true, prov);
+							return;
+						}
 					}
-					SoapObject result = null;
-					result = (SoapObject) envelope.bodyIn;
-					int i = result.getPropertyCount();
-					String str = result.getProperty(i - 1).toString();
-					ArrayList<Result> prov = PraseUtil.Parse(str);
-					observer.getWeatherFinished(true, prov);
 				} catch (Exception e) {
 					e.printStackTrace();
-					observer.getWeatherFinished(false, null);
 				}
+				observer.getWeatherFinished(false, null);
+
 			}
 		}).start();
 	}

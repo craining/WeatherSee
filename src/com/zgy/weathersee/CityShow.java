@@ -14,6 +14,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.zgy.weathersee.bean.Result;
 import com.zgy.weathersee.controller.MainController;
@@ -36,38 +37,38 @@ public class CityShow extends Activity implements OnItemClickListener {
 		lv.setOnItemClickListener(this);
 		ImageView imgback = (ImageView) findViewById(R.id.img_city_back);
 		imgback.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				exit();
 			}
 		});
-		
-		
-		
+
 		Bundle b = getIntent().getExtras();
-		  name = b.getString("provname");
-		
+		name = b.getString("provname");
+
+		((TextView) findViewById(R.id.text_city)).setText(name);
+
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
 		new Handler().postDelayed(new Runnable() {
-			
+
 			@Override
 			public void run() {
-				if(cityList == null || cityList.size()<=0) {
+				if (cityList == null || cityList.size() <= 0) {
 					if (NetworkUtil.ifNoConnectionExit(CityShow.this)) {
 						return;
 					}
 					CustomProgressDialog.getInstance(CityShow.this).showProgressDialog("正在获取城市...", true, null, null, null);
 					MainController.getInstance().getCity(mObserver, name);
 				}
-				
+
 			}
 		}, 100);
-	
+
 	}
 
 	@Override
@@ -83,14 +84,17 @@ public class CityShow extends Activity implements OnItemClickListener {
 		startActivity(i);
 		overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
 	}
+
 	@Override
 	public void onBackPressed() {
 		exit();
 	}
+
 	private void exit() {
 		finish();
 		overridePendingTransition(R.anim.push_left_in, R.anim.push_right_out);
 	}
+
 	private MainObserver mObserver = new MainObserver() {
 
 		@Override
